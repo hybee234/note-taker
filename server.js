@@ -39,9 +39,13 @@ app.get('/notes', (req, res) =>
 );
 
 //- Note - database -//
-app.get('/api/notes', (req,res) =>
-    res.json (notesDB)
-)
+// [HL] Existing notes to display within note take left hand side
+app.get('/api/notes', (req,res) => {
+    res.json (notesDB);
+    console.info (`${req.method} existing notes activated ('/api/notes')`);
+    console.info (notesDB);
+    
+});
 
 
 // // GET request for reviews
