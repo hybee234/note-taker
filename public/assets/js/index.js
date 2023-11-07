@@ -70,8 +70,8 @@ const renderActiveNote = () => {
     hide(saveNoteBtn);                              // Hides the save button
 
     if (activeNote.id) {                            // if activeNote.id is valid (in db.json file)
-        noteTitle.setAttribute('readonly', true);   // set elements to ready only
-        noteText.setAttribute('readonly', true);    // set elements to ready only
+        noteTitle.setAttribute('readonly', true);   // set elements to ready-only
+        noteText.setAttribute('readonly', true);    // set elements to ready-only
         noteTitle.value = activeNote.title;         // set Note title to active Note
         noteText.value = activeNote.text;           // set Note body  to active Note body
     } else {
@@ -118,8 +118,8 @@ const handleNoteDelete = (e) => {
     }
 
     deleteNote(noteId).then(() => {
-        getAndRenderNotes();
-        renderActiveNote();
+        getAndRenderNotes(); // get notes from db.json
+        renderActiveNote(); // render onto right side
     });
 };
 
