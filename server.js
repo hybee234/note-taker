@@ -10,6 +10,8 @@ const { v4: uuidv4 } = require('uuid');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+const notesDB = require('./db/db.json');
+
 //-------------//
 //- Middleware-//
 //-------------//
@@ -26,15 +28,20 @@ app.use(express.static('public'));
 //- GET requests- //
 //----------------//
 
-//Homepage - public/index.html//
+//- Homepage - public/index.html -//
 app.get('/', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
-//Notes - public/notes/html//
+//- Notes - public/notes/html -//
 app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
+
+//- Note - database -//
+app.get('/api/notes', (req,res) =>
+    res.json (notesDB)
+)
 
 
 // // GET request for reviews
