@@ -4,7 +4,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-// Helper method for generating unique ids
+
 const { v4: uuidv4 } = require('uuid');
 
 const PORT = process.env.PORT || 3001;
@@ -42,7 +42,7 @@ app.get('/notes', (req, res) =>
 // [HL] Existing notes to display within note take left hand side
 app.get('/api/notes', (req,res) => {
     res.json (notesDB);
-    console.info (`${req.method} existing notes activated ('/api/notes')`);
+    console.info (`   ***${req.method} existing notes activated ('/api/notes')`);
     console.info (notesDB);
     
 });
@@ -57,60 +57,62 @@ app.get('/api/notes', (req,res) => {
 //     console.info(`${req.method} request received to get reviews`);
 // });
 
-//-----------------//
-//- POST requests- //
-//-----------------//
+//----------------------------------//
+//- POST request to add a new NOTE -//
+//----------------------------------//
 
+app.post('/api/notes', (req, res) => {
+    // Log that a POST request was received
+    console.info(`   ***${req.method} request received to add a note`);
 
-// // POST request to add a review
-// app.post('/api/reviews', (req, res) => {
-//   // Log that a POST request was received
-//     console.info(`${req.method} request received to add a review`);
+    // Destructuring assignment for the items in req.body (store values in req.body in a destructured manner)
+    const { text, title } = req.body;
 
-//   // Destructuring assignment for the items in req.body
-//   const { product, review, username } = req.body;  // [HL] Receive the data and put it into this structure
+    // If all the required properties are present
+    // [HL] Validate required values are there
+    if (text && title) {
+    // Variable for the object we will save
+    // [HL] If values there then create new object
+    const newNote = {
+        id: uuidv4(),
+        title, 
+        text
+    };
 
-// POST data must be in the form of:
-// {
-// 	"product": "booboo",
-// 	"review": "asdf",
-// 	"username": "Hy"
-// }
+    // Obtain existing reviews
+    fs.readFile('./db/db.json', 'utf8', (err, notedata) => {
+        if (err) {
+        console.error(err);
+        } else {
+        // Convert string into JSON object
+        const parsedNotes = JSON.parse(notedata);
 
-  // If all the required properties are present
-//   if (product && review && username) {     // [HL] check that data is there (and in the right structure) and create new object
-//     // Variable for the object we will save
-//     const newReview = {
-//         product,
-//         review,
-//         username,
-//         upvotes: Math.floor(Math.random() * 100),
-//         review_id: uuid(),
-//     };
+        // Push new Review into pasedReviews Array
+        parsedNotes.push(newNote);
 
-//     // Convert the data to a string so we can save it
-//     const reviewString = JSON.stringify(newReview);
+        // Write updated reviews back to the file
+        fs.writeFile(
+            './db/db.json',
+            JSON.stringify(parsedNotes, null, 4),
+            (writeErr) =>
+            writeErr
+                ? console.error(writeErr)
+                : console.info('Successfully updated notes!')
+        );
+        }
+    });
 
-//     // Write the string to a file
-//     fs.writeFile(`./db/${newReview.product}.json`, reviewString, (err) =>
-//         err
-//             ? console.error(err)
-//             : console.log(
-//                 `Review for ${newReview.product} has been written to JSON file`
-//             )
-//     );
+    const response = {
+        status: 'success',
+        body: newNote,
+    };
 
-//     const response = {
-//         status: 'success',
-//         body: newReview,
-//     };
-
-//     console.log(response);
-//         res.status(201).json(response);
-//     } else {
-//         res.status(500).json('Error in posting review');
-//     }
-// });
+    console.log(response);
+    res.status(201).json(response);
+    } else {
+        res.status(500).json('Error in posting review');
+    }
+});
 
 app.listen(PORT, () =>
     console.log(`Listening for requests on port ${PORT}! 🏎️`)
