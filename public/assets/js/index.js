@@ -39,7 +39,8 @@ const getNotes = () =>
         headers: {
         'Content-Type': 'application/json',
         },
-    });
+    })
+    //  .then (()=> {console.log("\n\n\n > getNotes API Called") })
 
 // [HL] POST notes to db.json//
 
@@ -55,11 +56,12 @@ const saveNote = (newNote) =>
 // [HL] DELETE notes from db.json//
 
 const deleteNote = (id) =>
-    fetch(`/api/notes/${id}`, {
-        method: 'DELETE',
+    fetch(`/api/deletenote/${id}`, {
+        method: 'POST',
         headers: {
         'Content-Type': 'application/json',
         },
+        
     });
 
 //---------------------------------//
@@ -88,6 +90,7 @@ const renderActiveNote = () => {
 
 //Called by the save note button
 const handleNoteSave = () => {
+    console.log("\n\n\n > handleNoteSave() Called");       
     const note = {
         title: noteTitle.value,
         text: noteText.value,
@@ -98,23 +101,23 @@ const handleNoteSave = () => {
     });
 };
 
-//------------------//
-//- Function - abc -//
-//------------------//
+//-------------------------------------//
+//- Function - Delete (Splice) record -//
+//-------------------------------------//
+// Truiggered by the deleteNote button
 
 // Delete the clicked note
 const handleNoteDelete = (e) => {
+    console.log("\n\n\n > handleNoteDelete() Called");   
   // Prevents the click listener for the list from being called when the button inside of it is clicked
     e.stopPropagation();
 
-    const note = e.target;
-    const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
+    const note = e.target;    
+    const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;   //grabs the note ID of the parent element
+        
+    console.log (`NoteId = ${noteId}`)   
 
-    if (activeNote.id === noteId) {
-        activeNote = {};
-    }
-
-    deleteNote(noteId).then(() => {
+    deleteNote(noteId).then(() => {  
         getAndRenderNotes(); // get notes from db.json
         renderActiveNote(); // render onto right side
     });
@@ -127,8 +130,10 @@ const handleNoteDelete = (e) => {
 // Triggered by click event listener on dynamically created notes on left of screen
 // Sets the activeNote and displays it
 const handleNoteView = (e) => {
+    console.log("\n\n\n > handleNoteView() Called");   
     e.preventDefault();
     activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note')); // Set clicked note as activeNote {"title","text"} - maybe active note also needs ID.   
+    console.log(activeNote)   // [Delete at the end]
     renderActiveNote();
 };
 
@@ -139,6 +144,7 @@ const handleNoteView = (e) => {
 // Triggered by clicking ont the "plus" sign in top right to add new note
 // Sets the activeNote to an empty object and allows the user to enter a new note
 const handleNewNoteView = (e) => {
+    console.log("\n\n\n > handleNewNoteView() Called");   
     activeNote = {};                    // Clear activeNote
     renderActiveNote();
 };
@@ -148,6 +154,7 @@ const handleNewNoteView = (e) => {
 //------------------------------------//
 
 const handleRenderSaveBtn = () => {
+    console.log("\n\n\n > handleRenderSaveBtn() Called");   
     if (!noteTitle.value.trim() || !noteText.value.trim()) {   // If note title or text is null/undefined then hide the save button, else show
         hide(saveNoteBtn);
     } else {
@@ -161,6 +168,7 @@ const handleRenderSaveBtn = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
+    console.log("\n\n\n > renderNoteList() Called");   
     let jsonNotes = await notes.json();
     if (window.location.pathname === '/notes') {
         noteList.forEach((el) => (el.innerHTML = ''));          // clear the existing list of notes (so that it can be repopulated)
@@ -206,11 +214,10 @@ const renderNoteList = async (notes) => {
     }
 
     //ForEach loop that calls createLi to create the row
-    jsonNotes.forEach((note) => {
-        const li = createLi(note.title);
-        li.dataset.note = JSON.stringify(note);
-
-        noteListItems.push(li);
+    jsonNotes.forEach((note) => {               // for each "note" within the jasonNotes array:
+            const li = createLi(note.title);
+            li.dataset.note = JSON.stringify(note);
+            noteListItems.push(li);
     });
 
     if (window.location.pathname === '/notes') {
@@ -223,7 +230,10 @@ const renderNoteList = async (notes) => {
 //--------------------------------//
 
 // Gets notes from the db.json and renders them to the sidebar
-const getAndRenderNotes = () => getNotes().then(renderNoteList);
+const getAndRenderNotes = () => {
+    console.log("\n\n\n > getAndRenderNotes() Called");   
+getNotes().then(renderNoteList);
+}
 
 if (window.location.pathname === '/notes') {
     saveNoteBtn.addEventListener('click', handleNoteSave);
