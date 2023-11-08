@@ -43,13 +43,13 @@ const getNotes = () =>
 
 // [HL] POST notes to db.json//
 
-const saveNote = (note) =>
+const saveNote = (newNote) =>
     fetch('/api/notes', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
         },
-        body: JSON.stringify(note),
+        body: JSON.stringify(newNote),
     });
 
 // [HL] DELETE notes from db.json//
@@ -82,20 +82,17 @@ const renderActiveNote = () => {
     }
 };
 
-//----------------------------//
-//- Function - Saving a new note -//
-//----------------------------//
+//--------------------------------//
+//- Function - Saving Note -//
+//--------------------------------//
 
-// [HL] need to develop this as (pull all data, push new value in and write it back)
-// readFile, pull data, add new record, writeFile 
-// handle ID??
-
+//Called by the save note button
 const handleNoteSave = () => {
-    const newNote = {
+    const note = {
         title: noteTitle.value,
         text: noteText.value,
     };
-    saveNote(newNote).then(() => {
+    saveNote(note).then(() => {
         getAndRenderNotes();
         renderActiveNote();
     });
