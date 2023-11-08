@@ -87,7 +87,7 @@ app.post('/api/notes', (req, res) => {
                 writeErr ? console.error(writeErr) : console.info('   Successfully added new note')
             );
             const response = {
-                status: 'success',
+                status: 'create note successful',
                 body: newNote,
             };
             res.status(201).json(response);                                                                     // Provide a response back to the API to allow it go continue on
@@ -129,7 +129,7 @@ app.post('/api/deletenote/:id', (req, res) => {
             writeErr ? console.error(writeErr) : console.info('   Successfully spliced note')
         )
         const response = {
-            status: 'splice succeeded'
+            status: 'splice successful'
         };
         res.status(201).json(response);                                                                     // Provide a response back to the API to allow it go continue on
         return;
