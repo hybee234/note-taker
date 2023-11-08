@@ -39,17 +39,11 @@ app.get('/', (req, res) =>
 );
 
 //- Note - database -//
-// [HL] Existing notes to display within note take left hand side
-// app.get('/api/notes', (req,res) => {
-//     res.json (notesDB);
-//     console.info (`   ***${req.method} existing notes activated ('/api/notes')`);
-//     console.info (notesDB);
-    
-// });
+// [HL] Get notes from db.json, format it to 'utf8' and pass it back as response.
 
 app.get('/api/notes', (req,res) => {
     fs.readFile('./db/db.json', 'utf8', (err, notedata) => {
-        console.info (`   ***${req.method} existing notes activated ('/api/notes')`);
+        console.info (`   ***${req.method} records from db.json ('/api/notes')`);
         if (err) {
             console.error(err);
         } else {   
@@ -67,7 +61,7 @@ app.get('/api/notes', (req,res) => {
 //----------------------------------//
 
 app.post('/api/notes', (req, res) => {
-    console.info(`   ***${req.method} request received to add a note`);         // Log that a POST request was received
+    console.info(`   ***${req.method} record to db.json ('/api/notes')`);         // Log that a POST request was received
     
     const { text, title } = req.body;                                           // Destructuring assignment for the items in req.body (store values in req.body in a destructured manner)
     
@@ -105,6 +99,11 @@ app.post('/api/notes', (req, res) => {
         res.status(500).json('Error in saving Note');
     }
 });
+
+
+//-----------------//
+//- Listener PORT -//
+//-----------------//
 
 app.listen(PORT, () =>
     console.log(`Listening for requests on port ${PORT}! 🏎️`)
