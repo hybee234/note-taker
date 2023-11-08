@@ -73,7 +73,7 @@ app.post('/api/notes', (req, res) => {
         const saveNotePromise = new Promise (function(resolve, reject) {
             fs.readFile('./db/db.json', 'utf8', (err, noteData) => {
                 if (err) {                
-                    console.error(err);
+                    reject(err);
                 } else {  
                     resolve(noteData) 
                 }
